@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Xamarin.Forms;
 
 namespace TodoREST
 {
@@ -16,7 +17,15 @@ namespace TodoREST
 
         public RestService()
         {
-            _client = new HttpClient();
+            switch (Device.RuntimePlatform)
+            {
+                case Device.Android:
+                    _client = new HttpClient(DependencyService.Get<IHttpClientHandlerService>().GetInsecureHandler());
+                    break;
+                default:
+                    _client = new HttpClient();
+                    break;
+            }
         }
 
         public async Task<List<TodoItem>> RefreshDataAsync()
